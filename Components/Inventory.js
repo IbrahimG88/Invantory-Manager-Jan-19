@@ -12,10 +12,11 @@ class Inventory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            GrandList: ''
+            GrandList: []
         };
 
-        this.loadItems = this.loadItems.bind(this);
+        this.getItem = this.getItem.bind(this);
+
     }
 
 
@@ -24,54 +25,45 @@ class Inventory extends Component {
     };
 
 
-    componentDidMount() {
+    componentDidMount(){
         AsyncStorage.getItem("GrandList").then((value) => {
             const restoredGrandList = JSON.parse(value);
             this.setState({GrandList: restoredGrandList});
+        });
+    }
 
+    getItem (){
+        AsyncStorage.getItem("GrandList").then((value) => {
+            const restoredGrandList = JSON.parse(value);
+            this.setState({GrandList: restoredGrandList});
+          //  console.log(restoredGrandList);
             console.log(this.state.GrandList);
-        })
+        });
     };
 
     render() {
-        let list = this.state.GrandList;
-        console.log(list);
+let theArray = this.state.GrandList;
         return (
-            <View  style={styles.container}>
+            <View >
                 <Header />
-                <SectionList
-                    sections={[
-                        {title: 'All', data: list},
-                    ]}
-                    renderItem={({item}) => <Text style={styles.item}>{item}</Text>}
-                    renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-                    keyExtractor={(item, index) => index}
-                />
+                <Text>hii</Text>
+                <Button
+                    onPress={this.getItem}
+                    title="get Item"><Text>get</Text></Button>
+
+                {theArray.map((item) => {
+                    return(
+                        <Text>Name: {item.itemName} {"\n"}
+                        Brand: {item.brand}</Text>
+                    );
+                })}
             </View>
 
         );
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 22
-    },
-    sectionHeader: {
-        paddingTop: 2,
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 2,
-        fontSize: 14,
-        fontWeight: 'bold',
-        backgroundColor: 'rgba(247,247,247,1.0)',
-    },
-    item: {
-        padding: 10,
-        fontSize: 18,
-        height: 44,
-    },
-})
 
 export default Inventory;
+
+/*   */

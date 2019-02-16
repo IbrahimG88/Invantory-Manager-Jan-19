@@ -15,6 +15,7 @@ class RegisterItem extends Component {
             GrandList: []
         };
         this.saveItem = this.saveItem.bind(this);
+        this.getItem = this.getItem.bind(this);
     }
 
     static navigationOptions = {
@@ -28,9 +29,27 @@ class RegisterItem extends Component {
         item.device = this.state.device;
         item.brand = this.state.brand;
 
-        this.setState({
-            GrandList: this.state.GrandList.push(item)});
-        console.log(this.state.GrandList);
+        const theArray = [...this.state.GrandList];
+        theArray.push(item);
+
+        this.setState({GrandList: theArray});
+        console.log(theArray);
+
+    const stringifiedGrandList = JSON.stringify(theArray);
+
+   // console.log(stringifiedGrandList);
+        AsyncStorage.setItem("GrandList", stringifiedGrandList);
+        //console.log(this.state.GrandList);
+    }
+
+    getItem (){
+        AsyncStorage.getItem("GrandList").then((value) => {
+            const restoredGrandList = JSON.parse(value);
+            this.setState({GrandList: restoredGrandList});
+            console.log(restoredGrandList);
+        });
+
+
     }
 
     render(){
@@ -58,6 +77,9 @@ class RegisterItem extends Component {
                         <Button
                             onPress={this.saveItem}
                             title="Save Item"><Text>Save</Text></Button>
+                        <Button
+                            onPress={this.getItem}
+                            title="get Item"><Text>get</Text></Button>
                     </Form>
                 </Content>
             </Container>
