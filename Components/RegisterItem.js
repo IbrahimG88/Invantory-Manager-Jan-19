@@ -16,6 +16,7 @@ class RegisterItem extends Component {
         };
         this.saveItem = this.saveItem.bind(this);
         this.getItem = this.getItem.bind(this);
+        this.removeLastItem = this.removeLastItem.bind(this);
     }
 
     static navigationOptions = {
@@ -52,6 +53,22 @@ class RegisterItem extends Component {
 
     }
 
+    removeLastItem () {
+        const newArray = [...this.state.GrandList];
+        newArray.slice(-1);
+
+
+        this.setState({GrandList: newArray});
+
+
+        const stringifiedGrandList = JSON.stringify(newArray);
+
+        // console.log(stringifiedGrandList);
+        AsyncStorage.setItem("GrandList", stringifiedGrandList);
+        //console.log(this.state.GrandList);
+
+    }
+
     render(){
         return(
             <Container>
@@ -80,6 +97,9 @@ class RegisterItem extends Component {
                         <Button
                             onPress={this.getItem}
                             title="get Item"><Text>get</Text></Button>
+                        <Button
+                            onPress={this.removeLastItem}
+                            title="remove Item"><Text>remove item</Text></Button>
                     </Form>
                 </Content>
             </Container>

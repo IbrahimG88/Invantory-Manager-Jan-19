@@ -26,10 +26,10 @@ class Inventory extends Component {
 
 
     componentDidMount(){
-        AsyncStorage.getItem("GrandList").then((value) => {
-            const restoredGrandList = JSON.parse(value);
-            this.setState({GrandList: restoredGrandList});
-        });
+      AsyncStorage.getItem("GrandList").then((value) => {
+         const restoredGrandList = JSON.parse(value);
+          this.setState({GrandList: restoredGrandList});
+      });
     }
 
     getItem (){

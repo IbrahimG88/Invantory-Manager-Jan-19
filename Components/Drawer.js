@@ -7,7 +7,9 @@ import RegisterItem from "./RegisterItem";
 
 import Inventory from "./Inventory";
 
+import StocksHome from "./Stocks/stocks-component";
 
+import StocksInput from "./Stocks/stocks-input";
 
 class MyHomeScreen extends Component {
     static navigationOptions = {
@@ -60,6 +62,12 @@ const MyDrawerNavigator = createDrawerNavigator({
     },
     Inventory: {
         screen: Inventory,
+    },
+    Stocks: {
+        screen: StocksHome,
+    },
+    StocksInput: {
+        screen: StocksInput,
     }
 });
 
