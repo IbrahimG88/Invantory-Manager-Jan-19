@@ -26,10 +26,10 @@ class Inventory extends Component {
 
 
     componentDidMount(){
-      AsyncStorage.getItem("GrandList").then((value) => {
-         const restoredGrandList = JSON.parse(value);
-          this.setState({GrandList: restoredGrandList});
-      });
+    //  AsyncStorage.getItem("GrandList").then((value) => {
+      //   const restoredGrandList = JSON.parse(value);
+        //  this.setState({GrandList: restoredGrandList});
+     // });
     }
 
     getItem (){
@@ -54,7 +54,8 @@ let theArray = this.state.GrandList;
                 {theArray.map((item) => {
                     return(
                         <Text>Name: {item.itemName} {"\n"}
-                        Brand: {item.brand}</Text>
+                        Brand: {item.brand } {"\n"}
+                        Days Till Depletion: {item.daysTillDepletion}</Text>
                     );
                 })}
             </View>

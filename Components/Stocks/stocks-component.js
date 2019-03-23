@@ -17,6 +17,8 @@ class StocksHome extends Component {
     this.searchFunction = this.searchFunction.bind(this);
 
     this.press = this.press.bind(this);
+
+        this.getItem = this.getItem.bind(this);
     }
 
     static navigationOptions = {
@@ -33,6 +35,16 @@ class StocksHome extends Component {
 
         });
 
+    }
+
+    getItem() {
+        let allItemsList = [];
+        AsyncStorage.getItem('GrandList').then((value) => {
+            const restoredArray = JSON.parse(value);
+            allItemsList.push(value);
+            console.log(restoredArray);
+            this.setState({'allItems': restoredArray });
+        });
     }
 
 
@@ -68,6 +80,9 @@ class StocksHome extends Component {
 
                 </Header>
                 <Content>
+                    <Button
+                        onPress={this.getItem}
+                        title="get Item"><Text>get</Text></Button>
                     <List>
                         {this.state.allItems.map((item, index)=>{
                             if(this.state.showAllItemsList){

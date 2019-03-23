@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import { Container, Header, Content, Form, Item, Input, Label, Text } from 'native-base';
+import { Container, Header, Content, Form, Item, Input, Label, Text, Button } from 'native-base';
 import {AsyncStorage} from "react-native";
 
 class StocksInput extends Component {
@@ -18,12 +18,13 @@ class StocksInput extends Component {
             daysTillDepletion: '',
         };
 
-        this.calculation = this.calculation.bind(this);
+
         this.setCurrentItem = this.setCurrentItem.bind(this);
+        this.saveItem = this.saveItem.bind(this);
     }
 
 
-    //global variable
+    //global variables
     daysTillDepletion;
 
 
@@ -33,18 +34,77 @@ class StocksInput extends Component {
         drawerLabel: 'StocksInput'
     };
 
-     calculation() {
-         this.setState({daysTillDepletion: this.daysTillDepletion});
-     }
 
-     setCurrentItem(){
-         const parametersIndex = this.props.navigation.getParam("index","default value");
-         const currentItem = this.state.allItems[parametersIndex];
-         this.setState({itemName: currentItem.itemName,
-             brand:currentItem.brand,
-             category:currentItem.category
-             ,device: currentItem.device});
-     };
+
+    setCurrentItem(){
+
+
+
+        const parametersIndex = this.props.navigation.getParam("index","default value");
+        const currentItem = this.state.allItems[parametersIndex];
+        this.setState({itemName: currentItem.itemName,
+            brand:currentItem.brand,
+            category:currentItem.category,
+            device: currentItem.device,
+            unit: currentItem.unit,
+            testsPerUnit: currentItem.testsPerUnit,
+            consumptionRate:currentItem.consumptionRate,
+            daysTillDepletion: currentItem.daysTillDepletion
+        });
+    };
+
+    saveItem(){
+
+
+        const parametersIndex = this.props.navigation.getParam("index","default value");
+
+        //[...allItems]
+        //const item = {}
+        //const stockeditem;
+        //currentItem = stockedItem;
+        //condole.log allitems and currentItem
+        //asyncstorage set the grandlist
+
+        let beforeList = [...this.state.allItems];
+
+        const stockedItem = {
+            itemName:this.state.itemName,
+            brand:this.state.brand,
+            device:this.state.device,
+            category: this.state.category,
+            unit: this.state.unit,
+            testsPerUnit:this.state.testsPerUnit,
+            consumptionRate:this.state.consumptionRate,
+            daysTillDepletion: this.daysTillDepletion,
+        };
+
+        beforeList[parametersIndex] = stockedItem;
+
+        this.setState({allItems: beforeList});
+
+        console.log("stocked item:" + JSON.stringify(stockedItem));
+        console.log("beforeList"+ JSON.stringify(beforeList));
+
+
+
+        const stringifiedGrandList = JSON.stringify(beforeList);
+
+        // console.log(stringifiedGrandList);
+        AsyncStorage.setItem("GrandList", stringifiedGrandList);
+        //console.log(this.state.GrandList);
+
+        this.setState({
+            itemName:'',
+            brand:'',
+            device:'',
+            category: '',
+            unit: '',
+            testsPerUnit: '',
+            consumptionRate:'',
+            daysTillDepletion: '',
+        });
+    }
+
 
 
     componentDidMount() {
@@ -54,17 +114,17 @@ class StocksInput extends Component {
             allItemsList.push(value);
             console.log(restoredArray);
             this.setState({'allItems': restoredArray });
-            this.setCurrentItem();
             console.log(this.state.allItems);
         });
 
+
+
     }
 
+
     render() {
-        let unit;
-        let consumptionRate;
-        let testsPerUnit;
-         this.daysTillDepletion = this.state.unit* this.state.consumptionRate;
+
+        this.daysTillDepletion = this.state.unit* this.state.consumptionRate;
         console.log("days:2 "+ this.daysTillDepletion);
         console.log("days:state"+ this.state.daysTillDepletion);
 
@@ -75,40 +135,44 @@ class StocksInput extends Component {
                 <Header/>
                 <Content>
                     <Form>
+                        <Button
+                            onPress={this.setCurrentItem}
+                            title="Add stocks"><Text>Add Stocks</Text></Button>
+
                         <Item stackedLabel>
                             <Label>Item Name</Label>
-                            <Input value={this.state.itemName}/>
+                            <Text>{this.state.itemName}</Text>
                         </Item>
                         <Item stackedLabel>
-                            <Label>Item Name</Label>
-                            <Input value={this.state.category}/>
+                            <Label>Category</Label>
+                            <Text> {this.state.category}</Text>
                         </Item>
                         <Item stackedLabel>
                             <Label>Brand</Label>
-                            <Input value={this.state.brand}/>
+                            <Text> {this.state.brand}</Text>
                         </Item>
                         <Item stackedLabel>
                             <Label>Device</Label>
-                            <Input value={this.state.device}/>
+                            <Text> {this.state.device}</Text>
                         </Item>
                         <Item stackedLabel>
                             <Label>Unit</Label>
                             <Input
-                                value = {unit}
-                                onChangeText={(text)=> {this.setState({unit : text}); this.calculation()}}
+                                value = {this.state.unit}
+                                onChangeText={(text)=> {this.setState({unit : text})}}
                             />
                         </Item>
                         <Item stackedLabel>
                             <Label>Consumption rate</Label>
                             <Input
-                                value = {consumptionRate}
-                                onChangeText={(text)=> {this.setState({consumptionRate : text}); this.calculation()}}
+                                value = {this.state.consumptionRate}
+                                onChangeText={(text)=> {this.setState({consumptionRate : text})}}
                             />
                         </Item>
                         <Item stackedLabel>
                             <Label>Tests per unit</Label>
                             <Input
-                                value = {testsPerUnit}
+                                value = {this.state.testsPerUnit}
                                 onChangeText={(text)=> this.setState({testsPerUnit : text})}/>
                         </Item>
                         <Item stackedLabel>
@@ -116,11 +180,13 @@ class StocksInput extends Component {
                             <Input />
                             <Text>{this.daysTillDepletion}
 
-                                </Text>
+                            </Text>
 
 
                         </Item>
-
+                        <Button
+                            onPress={this.saveItem}
+                            title="Save Item"><Text>Save Item</Text></Button>
                     </Form>
                 </Content>
             </Container>

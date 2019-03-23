@@ -38,9 +38,18 @@ class RegisterItem extends Component {
 
     const stringifiedGrandList = JSON.stringify(theArray);
 
+        this.setState({
+            itemName: "",
+            category: "",
+            device: "",
+            brand: "",
+        });
+
    // console.log(stringifiedGrandList);
         AsyncStorage.setItem("GrandList", stringifiedGrandList);
         //console.log(this.state.GrandList);
+
+
     }
 
     getItem (){
@@ -77,19 +86,27 @@ class RegisterItem extends Component {
                     <Form>
                         <Item floatingLabel>
                             <Label><Text>Item Name</Text></Label>
-                            <Input onChangeText={(text) => this.setState({itemName: text})}/>
+                            <Input
+                                value={this.state.itemName}
+                                onChangeText={(text) => this.setState({itemName: text})}/>
                         </Item>
                         <Item floatingLabel>
                             <Label><Text> Category </Text></Label>
-                            <Input onChangeText={(text) => this.setState({category: text})}/>
+                            <Input
+                                value={this.state.category}
+                                onChangeText={(text) => this.setState({category: text})}/>
                         </Item>
                         <Item floatingLabel>
                             <Label><Text> Device</Text> </Label>
-                            <Input onChangeText={(text) => this.setState({device: text})}/>
+                            <Input
+                                value={this.state.device}
+                                onChangeText={(text) => this.setState({device: text})}/>
                         </Item>
                         <Item floatingLabel last>
                             <Label><Text> Brand </Text></Label>
-                            <Input onChangeText={(text) => this.setState({brand: text})}/>
+                            <Input
+                                value={this.state.brand}
+                                onChangeText={(text) => this.setState({brand: text})}/>
                         </Item>
                         <Button
                             onPress={this.saveItem}
