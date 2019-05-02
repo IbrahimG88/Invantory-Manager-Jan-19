@@ -3,6 +3,10 @@ import React, {Component} from "react";
 import { Container, Header, Content, Form, Item, Input, Label, Text, Button } from 'native-base';
 import {AsyncStorage} from "react-native";
 
+
+
+//you get navigated to this page eith from stock or inventory or any page
+//NOT ALLOWED TO HEAD TO THIS COMPONENT FROM DRAWER
 class StocksInput extends Component {
     constructor(props) {
         super(props);
@@ -18,8 +22,6 @@ class StocksInput extends Component {
             daysTillDepletion: '',
         };
 
-
-        this.setCurrentItem = this.setCurrentItem.bind(this);
         this.saveItem = this.saveItem.bind(this);
     }
 
@@ -35,36 +37,41 @@ class StocksInput extends Component {
     };
 
 
+    componentDidMount(){
+        this.willFocusListener = this.props.navigation.addListener("willFocus", ()=> {
+            this.loadParams();
+        })
+    }
 
-    setCurrentItem(){
+    componentWillUnmount(){
+        this.willFocusListener.remove();
+    }
+
+    loadParams(){
+        const { navigation } = this.props;
+        const newItemToStock = {};
+        newItemToStock.itemName = navigation.getParam('itemName', 'item name');
+        newItemToStock.category = navigation.getParam('category', 'category');
+        newItemToStock.device = navigation.getParam('device', 'device');
+        newItemToStock.brand = navigation.getParam('brand', 'brand');
+        console.log(' my time machine:'+ newItemToStock.brand);
+
+        this.setState({
+            itemName:navigation.getParam('itemName', 'item name'),
+            brand: navigation.getParam('brand', 'brand'),
+            device: navigation.getParam('device', 'device'),
+            category: navigation.getParam('category', 'category'),
+        })
+
+    }
 
 
-
-        const parametersIndex = this.props.navigation.getParam("index","default value");
-        const currentItem = this.state.allItems[parametersIndex];
-        this.setState({itemName: currentItem.itemName,
-            brand:currentItem.brand,
-            category:currentItem.category,
-            device: currentItem.device,
-            unit: currentItem.unit,
-            testsPerUnit: currentItem.testsPerUnit,
-            consumptionRate:currentItem.consumptionRate,
-            daysTillDepletion: currentItem.daysTillDepletion
-        });
-    };
 
 
     saveItem(){
 
 
         const parametersIndex = this.props.navigation.getParam("index","default value");
-
-        //[...allItems]
-        //const item = {}
-        //const stockeditem;
-        //currentItem = stockedItem;
-        //condole.log allitems and currentItem
-        //asyncstorage set the grandlist
 
         let beforeList = [...this.state.allItems];
 
@@ -108,24 +115,13 @@ class StocksInput extends Component {
 
 
 
-    componentDidMount() {
-        let allItemsList = [];
-        AsyncStorage.getItem('GrandList').then((value) => {
-            const restoredArray = JSON.parse(value);
-            allItemsList.push(value);
-            console.log(restoredArray);
-            this.setState({'allItems': restoredArray });
-            console.log(this.state.allItems);
-        });
-
-
-
-    }
 
 
     render() {
 
-        this.daysTillDepletion = this.state.unit* this.state.consumptionRate;
+       let totalNumberOfTests = this.state.unit* this.state.testsPerUnit;
+
+        this.daysTillDepletion = totalNumberOfTests / this.state.consumptionRate;
         console.log("days:2 "+ this.daysTillDepletion);
         console.log("days:state"+ this.state.daysTillDepletion);
 
@@ -136,10 +132,6 @@ class StocksInput extends Component {
                 <Header/>
                 <Content>
                     <Form>
-                        <Button
-                            onPress={this.setCurrentItem}
-                            title="Add stocks"><Text>Add Stocks</Text></Button>
-
                         <Item stackedLabel>
                             <Label>Item Name</Label>
                             <Text>{this.state.itemName}</Text>
@@ -164,20 +156,20 @@ class StocksInput extends Component {
                             />
                         </Item>
                         <Item stackedLabel>
-                            <Label>Consumption rate</Label>
+                            <Label>Consumption rate of units per month</Label>
                             <Input
                                 value = {this.state.consumptionRate}
                                 onChangeText={(text)=> {this.setState({consumptionRate : text})}}
                             />
                         </Item>
                         <Item stackedLabel>
-                            <Label>Tests per unit</Label>
+                            <Label>Tests per a single unit</Label>
                             <Input
                                 value = {this.state.testsPerUnit}
                                 onChangeText={(text)=> this.setState({testsPerUnit : text})}/>
                         </Item>
                         <Item stackedLabel>
-                            <Label>Days till depletion</Label>
+                            <Label>Days till depletion of all tests</Label>
                             <Input />
                             <Text>{this.daysTillDepletion}
 
@@ -185,9 +177,13 @@ class StocksInput extends Component {
 
 
                         </Item>
+                        <Text> {"\n"}</Text>
                         <Button
                             onPress={this.saveItem}
-                            title="Save Item"><Text>Save Item</Text></Button>
+                            title="Save Item"
+                            style = {{
+                                alignSelf: "center",
+                            }}><Text>Save Item</Text></Button>
                     </Form>
                 </Content>
             </Container>

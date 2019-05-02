@@ -4,6 +4,8 @@ import { Image, Text, View, TextInput, AsyncStorage} from 'react-native';
 
 import { Container, Header, Content, Form, Item, Input, Label, Button } from 'native-base';
 
+import { StocksInput } from "./Stocks/stocks-input";
+
 class RegisterItem extends Component {
     constructor(props) {
         super(props);
@@ -15,8 +17,9 @@ class RegisterItem extends Component {
             GrandList: []
         };
         this.saveItem = this.saveItem.bind(this);
-        this.getItem = this.getItem.bind(this);
+
         this.removeLastItem = this.removeLastItem.bind(this);
+        this.addStocksForItem = this.addStocksForItem.bind(this);
     }
 
     static navigationOptions = {
@@ -52,15 +55,6 @@ class RegisterItem extends Component {
 
     }
 
-    getItem (){
-        AsyncStorage.getItem("GrandList").then((value) => {
-            const restoredGrandList = JSON.parse(value);
-            this.setState({GrandList: restoredGrandList});
-            console.log(restoredGrandList);
-        });
-
-
-    }
 
     removeLastItem () {
         const newArray = [...this.state.GrandList];
@@ -76,6 +70,34 @@ class RegisterItem extends Component {
         AsyncStorage.setItem("GrandList", stringifiedGrandList);
         //console.log(this.state.GrandList);
 
+    }
+
+    //same as save item but takes this item and navigates to stocks-input component
+    addStocksForItem(){
+        const item = {};
+        item.itemName = this.state.itemName;
+        item.category = this.state.category;
+        item.device = this.state.device;
+        item.brand = this.state.brand;
+
+        const theArray = [...this.state.GrandList];
+        theArray.push(item);
+        this.setState({GrandList: theArray});
+        const stringifiedGrandList = JSON.stringify(theArray);
+        this.setState({
+            itemName: "",
+            category: "",
+            device: "",
+            brand: "",
+        });
+        AsyncStorage.setItem("GrandList", stringifiedGrandList);
+
+        this.props.navigation.navigate('StocksInput', {
+            itemName: item.itemName,
+            category: item.category,
+            device: item.device,
+            brand: item.brand,
+        });
     }
 
     render(){
@@ -108,15 +130,40 @@ class RegisterItem extends Component {
                                 value={this.state.brand}
                                 onChangeText={(text) => this.setState({brand: text})}/>
                         </Item>
-                        <Button
+                        <Text>{"\n"}</Text>
+                        <Button success
                             onPress={this.saveItem}
-                            title="Save Item"><Text>Save</Text></Button>
-                        <Button
-                            onPress={this.getItem}
-                            title="get Item"><Text>get</Text></Button>
-                        <Button
+                            title="Save Item"
+                            style={{
+                                    alignSelf:'flex-end',
+                                    marginRight: 30,
+                                    width: 60,
+                                    justifyContent: 'center'
+                                }}
+                        ><Text>Save</Text></Button>
+                        <Text>{"\n"}</Text>
+                        <Button primary
+                                onPress={this.addStocksForItem}
+                                title="add Item's stocks"
+                                style={{
+                                    alignSelf:'flex-end',
+                                    marginRight: 30,
+                                    width: 180,
+                                    justifyContent: 'center'
+                                }}>
+                            <Text>Add stocks for this item</Text></Button>
+
+                        <Text>{"\n"}</Text>
+                        <Button light
                             onPress={this.removeLastItem}
-                            title="remove Item"><Text>remove item</Text></Button>
+                            title="remove Item"
+                            style={{
+                                    alignSelf:'flex-end',
+                                    marginRight: 30,
+                                    width: 180,
+                                    justifyContent: 'center'
+                                }}>
+                            <Text>remove last item added</Text></Button>
                     </Form>
                 </Content>
             </Container>
