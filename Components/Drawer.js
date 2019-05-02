@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
 import { createAppContainer, createDrawerNavigator } from "react-navigation";
+import { DrawerItems, SafeAreaView } from 'react-navigation';
 import { Image, Button, Text, View} from 'react-native';
+import {Header} from 'native-base';
 
 import RegisterItem from "./RegisterItem";
 
@@ -11,6 +13,10 @@ import StocksHome from "./Stocks/stocks-component";
 
 import StocksInput from "./Stocks/stocks-input";
 
+import ReorderHome from "./Reorder/reorder";
+
+import { AsyncStorage} from 'react-native';
+
 class MyHomeScreen extends Component {
     static navigationOptions = {
         drawerLabel: 'Home'
@@ -19,7 +25,9 @@ class MyHomeScreen extends Component {
     render() {
         return (
             <View>
-                <Text>dhdhdhdhdhdhdh</Text>
+                <Header>
+                    <Text>App Home</Text>
+                </Header>
                 <Button
                     onPress={() => this.props.navigation.navigate('Notifications')}
                     title="Go to notifications"/>
@@ -50,9 +58,12 @@ class MyNotificationsScreen extends Component {
 
 
 
+
+
 const MyDrawerNavigator = createDrawerNavigator({
     Home: {
         screen: MyHomeScreen,
+
     },
     Notifications: {
         screen: MyNotificationsScreen,
@@ -68,7 +79,11 @@ const MyDrawerNavigator = createDrawerNavigator({
     },
     StocksInput: {
         screen: StocksInput,
-    }
+    },
+    Reorder: {
+        screen: ReorderHome,
+    },
+
 });
 
 export default MyApp = createAppContainer(MyDrawerNavigator);

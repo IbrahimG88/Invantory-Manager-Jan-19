@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 
 
-import { AppRegistry, SectionList, StyleSheet, Text, View, Button  } from 'react-native';
+import { AppRegistry, SectionList, StyleSheet, Text, View, Button, FlatList  } from 'react-native';
 
-import {Header } from "native-base";
+
+import{ Container, Header, Content, List, ListItem} from'native-base';
+
+
+
 
 
 import { AsyncStorage} from 'react-native';
@@ -12,10 +16,11 @@ class Inventory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            GrandList: []
+            GrandList: [],
+            isFetching: false
         };
 
-        this.getItem = this.getItem.bind(this);
+       this.getItem = this.getItem.bind(this);
 
     }
 
@@ -24,41 +29,85 @@ class Inventory extends Component {
         drawerLabel: 'Inventory'
     };
 
-
     componentDidMount(){
-    //  AsyncStorage.getItem("GrandList").then((value) => {
-      //   const restoredGrandList = JSON.parse(value);
-        //  this.setState({GrandList: restoredGrandList});
-     // });
+        this.willFocusListener = this.props.navigation.addListener("willFocus", ()=> {
+            this.someAction();
+        })
     }
 
-    getItem (){
+    componentWillUnmount(){
+      this.willFocusListener.remove();
+    }
+
+    someAction(){
+     console.log("I am focused");
         AsyncStorage.getItem("GrandList").then((value) => {
             const restoredGrandList = JSON.parse(value);
             this.setState({GrandList: restoredGrandList});
-          //  console.log(restoredGrandList);
+            //  console.log(restoredGrandList);
             console.log(this.state.GrandList);
         });
-    };
+     return(
+         <FlatList
+             data={this.state.GrandList}
+             extraData={this.state.GrandList}
+             renderItem={({item})=>(
+                 <List>
+                     <ListItem itemDivider>
+                         <Text>{item.itemName}</Text>
+                     </ListItem>
+                     <ListItem>
+                         <ListItem>
+                             <Text>Days till depletion: {item.daysTillDepletion}</Text>
+                         </ListItem>
+                     </ListItem>
+                 </List>
+             )}
+         />
+             )}
+
+
+
+
+
+    getItem() {
+        AsyncStorage.getItem("GrandList").then((value) => {
+            const restoredGrandList = JSON.parse(value);
+            this.setState({GrandList: restoredGrandList});
+            //  console.log(restoredGrandList);
+            console.log(this.state.GrandList);
+
+        });
+    }
+
+
+
 
     render() {
-let theArray = this.state.GrandList;
         return (
-            <View >
+            <Container>
                 <Header />
-                <Text>hii</Text>
-                <Button
-                    onPress={this.getItem}
-                    title="get Item"><Text>get</Text></Button>
+            <Content>
+                    <FlatList
+                        data={this.state.GrandList}
+                        extraData={this.state.GrandList}
+                        renderItem={({item})=>(
+                            <List>
+                            <ListItem itemDivider>
+                                <Text>{item.itemName}</Text>
+                            </ListItem>
+                                <ListItem>
+                                    <ListItem>
+                                        <Text>Days till depletion: {item.daysTillDepletion}</Text>
+                                    </ListItem>
+                                </ListItem>
+                            </List>
 
-                {theArray.map((item) => {
-                    return(
-                        <Text>Name: {item.itemName} {"\n"}
-                        Brand: {item.brand } {"\n"}
-                        Days Till Depletion: {item.daysTillDepletion}</Text>
-                    );
-                })}
-            </View>
+                        )}
+
+                        />
+            </Content>
+            </Container>
 
         );
     }
@@ -67,4 +116,3 @@ let theArray = this.state.GrandList;
 
 export default Inventory;
 
-/*   */
