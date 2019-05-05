@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 
-import { AppRegistry, SectionList, StyleSheet, Text, View, Button, FlatList  } from 'react-native';
+import { AppRegistry, SectionList, StyleSheet, Text, View, FlatList  } from 'react-native';
 
 
-import{ Container, Header, Content, List, ListItem} from'native-base';
+import{ Container, Header, Content, List, ListItem, Icon, Button, Left} from'native-base';
 
 
 
@@ -86,7 +86,16 @@ class Inventory extends Component {
     render() {
         return (
             <Container>
-                <Header />
+                <Header>
+                    <Left>
+                        <Icon name='ios-menu'
+                              style={{
+                                  color: "black",
+                                  paddingLeft: 25,
+                              }}
+                              onPress={() => this.props.navigation.openDrawer()}/>
+                    </Left>
+                </Header>
             <Content>
                     <FlatList
                         data={this.state.GrandList}

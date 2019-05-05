@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
 import { createAppContainer, createDrawerNavigator } from "react-navigation";
-import { DrawerItems, SafeAreaView } from 'react-navigation';
-import { Image, Button, Text, View} from 'react-native';
-import {Header} from 'native-base';
+
+import { Image, Text, View} from 'react-native';
+
+import {Container, Content , Button, Header, Icon, Left} from 'native-base';
+
 
 import RegisterItem from "./RegisterItem";
 
@@ -24,16 +26,25 @@ class MyHomeScreen extends Component {
 
     render() {
         return (
-            <View>
+            <Container>
                 <Header>
+                    <Left>
+                        <Icon name='ios-menu'
+                              style={{
+                                  color: "black",
+                                  paddingLeft: 25,
+                              }}
+                              onPress={() => this.props.navigation.openDrawer()}/>
+                    </Left>
                     <Text>App Home</Text>
                 </Header>
+                <Content>
                 <Button
                     onPress={() => this.props.navigation.navigate('Notifications')}
                     title="Go to notifications"/>
                 <Text> Home</Text>
-
-            </View>
+            </Content>
+            </Container>
         );
     }
 }

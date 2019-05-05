@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 
-import { Container, Header, Content, Form, Item, Input, Label, Text, Button } from 'native-base';
+import { Container, Header, Content, Form, Item, Input, Label, Text, Button, Icon, Left } from 'native-base';
 import {AsyncStorage} from "react-native";
 
 
@@ -49,13 +49,14 @@ class StocksInput extends Component {
 
     loadParams(){
         const { navigation } = this.props;
+        /*
         const newItemToStock = {};
         newItemToStock.itemName = navigation.getParam('itemName', 'item name');
         newItemToStock.category = navigation.getParam('category', 'category');
         newItemToStock.device = navigation.getParam('device', 'device');
         newItemToStock.brand = navigation.getParam('brand', 'brand');
         console.log(' my time machine:'+ newItemToStock.brand);
-
+        */
         this.setState({
             itemName:navigation.getParam('itemName', 'item name'),
             brand: navigation.getParam('brand', 'brand'),
@@ -70,11 +71,6 @@ class StocksInput extends Component {
 
     saveItem(){
 
-
-        const parametersIndex = this.props.navigation.getParam("index","default value");
-
-        let beforeList = [...this.state.allItems];
-
         const stockedItem = {
             itemName:this.state.itemName,
             brand:this.state.brand,
@@ -86,20 +82,21 @@ class StocksInput extends Component {
             daysTillDepletion: this.daysTillDepletion,
         };
 
-        beforeList[parametersIndex] = stockedItem;
 
-        this.setState({allItems: beforeList});
-
-        console.log("stocked item:" + JSON.stringify(stockedItem));
-        console.log("beforeList"+ JSON.stringify(beforeList));
+        const allItemsList = [];
 
 
 
-        const stringifiedGrandList = JSON.stringify(beforeList);
+        AsyncStorage.getItem("GrandList").then((value) => {
+            const restoredGrandList = JSON.parse(value);
+            allItemsList.push(value);
+        });
 
-        // console.log(stringifiedGrandList);
+        allItemsList.push(stockedItem);
+
+
+        const stringifiedGrandList = JSON.stringify(allItemsList);
         AsyncStorage.setItem("GrandList", stringifiedGrandList);
-        //console.log(this.state.GrandList);
 
         this.setState({
             itemName:'',
@@ -129,7 +126,16 @@ class StocksInput extends Component {
 
         return (
             <Container>
-                <Header/>
+                <Header>
+                    <Left>
+                        <Icon name='ios-menu'
+                              style={{
+                                  color: "black",
+                                  paddingLeft: 25,
+                              }}
+                              onPress={() => this.props.navigation.openDrawer()}/>
+                    </Left>
+                </Header>
                 <Content>
                     <Form>
                         <Item stackedLabel>

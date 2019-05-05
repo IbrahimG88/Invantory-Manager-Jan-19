@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Image, Text, View, TextInput, AsyncStorage} from 'react-native';
 
-import { Container, Header, Content, Form, Item, Input, Label, Button } from 'native-base';
+import { Container, Header, Content, Form, Item, Input, Label, Button, Icon, Left } from 'native-base';
 
 import { StocksInput } from "./Stocks/stocks-input";
 
@@ -103,7 +103,16 @@ class RegisterItem extends Component {
     render(){
         return(
             <Container>
-                <Header />
+                <Header>
+                    <Left>
+                        <Icon name='ios-menu'
+                              style={{
+                                  color: "black",
+                                  paddingLeft: 25,
+                              }}
+                              onPress={() => this.props.navigation.openDrawer()}/>
+                    </Left>
+                </Header>
                 <Content>
                     <Form>
                         <Item floatingLabel>

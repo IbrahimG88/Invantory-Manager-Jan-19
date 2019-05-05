@@ -1,6 +1,6 @@
 import React, { Component } from'react';
 
-import{ Container, Header, Content, List, ListItem, Text, Input, Button } from'native-base';
+import{ Container, Header, Content, List, ListItem, Text, Input, Button, Icon, Left } from'native-base';
 
 
 import{AsyncStorage} from"react-native";
@@ -15,13 +15,20 @@ this.state = {
     showAllItemsList: true,
     editActive: false
 };
-this.searchFunction = this.searchFunction.bind(this);
-        this.getItem = this.getItem.bind(this);
+    this.searchFunction = this.searchFunction.bind(this);
+    this.getItem = this.getItem.bind(this);
 }
 
 static navigationOptions= {
     drawerLabel: 'Reorder'
 };
+
+componentDidMount(){
+    this.wilFocusListener = this.props.navigation.addListener("willFocus", ()=> {
+        this.getItem();
+    })
+}
+
 
 getItem() {
 let allItemsList = [];
@@ -32,10 +39,11 @@ let allItemsList = [];
     this.setState({'allItems': restoredArray });
 
     });
-
 }
 
-
+componentWillUnmount (){
+    this.wilFocusListener.remove();
+}
 
 searchFunction (text) {
 this.setState({showAllItemsList: false,
@@ -67,6 +75,15 @@ return(
 
         <Container>
             <Header>
+                <Left>
+                    <Icon name='ios-menu'
+                          style={{
+                              color: "black",
+                              paddingLeft: 25,
+                          }}
+                          onPress={() => this.props.navigation.openDrawer()}/>
+                </Left>
+
                 <Input type="number" placeholder="days till reorder"
                        onChangeText={(text)=> {this.searchFunction(text)}} />
 
@@ -111,9 +128,6 @@ return(
                     })
                     }
 
-                <Button
-                    onPress={this.getItem}
-                    title="get Item"><Text>get</Text></Button>
             </Content>
         </Container>
 
